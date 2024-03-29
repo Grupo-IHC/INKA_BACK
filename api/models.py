@@ -12,6 +12,7 @@ class Client(Updater):
     last_name = models.CharField(max_length=100, default=None, blank=True, null=True, verbose_name="Primer apellido")
     second_last_name = models.CharField(max_length=100, default=None, blank=True, null=True, verbose_name="Segundo apellido")
     email = models.EmailField(max_length=100,default=None, blank=True, null=True, verbose_name="Correo electronico")
+    password = models.CharField(max_length=100, default=None, blank=True, null=True, verbose_name="Contraseña")
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="client", blank=True, null=True, verbose_name="Usuario")
 
     def __str__(self):
@@ -23,7 +24,7 @@ class Client(Updater):
         if not self.user:
 
             username = self.document_number 
-            password = f'{self.document_number}'
+            password = f'{self.password}'
             email = self.email if self.email else None
 
             user = User.objects.create_user(username=username, password=password, email=email)

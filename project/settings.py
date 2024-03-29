@@ -14,6 +14,10 @@ from pathlib import Path
 from decouple import config, Csv
 from datetime import timedelta
 import datetime
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,13 +27,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-r91d9ymj!9c#g9241btg**518b#2n*ji&&%c%&ja#4jlrh1y#s' 
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'False'
 
-ALLOWED_HOSTS = ['localhost','inkaback-production.up.railway.app']
-CSRF_TRUSTED_ORIGINS = ['https://inkaback-production.up.railway.app']
+ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', 'localhost')]
+CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS')
 
 
 # Application definition
@@ -41,6 +45,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'storages',
     
     'security',
     'api',
@@ -84,11 +91,11 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE'   : 'django.db.backends.postgresql',
-        'NAME'     : 'backendinka_bd',
-        'USER'     : 'backendinka',
-        'PASSWORD' : 'Inka1407$$',
-        'HOST'     : 'postgresql-backendinka.alwaysdata.net',
-        'PORT'     : '5432'
+        'NAME'     : os.environ.get('DB_NAME'),
+        'USER'     : os.environ.get('DB_USER'),
+        'PASSWORD' : os.environ.get('DB_PASSWORD'),
+        'HOST'     : os.environ.get('DB_HOST'),
+        'PORT'     : os.environ.get('DB_PORT'),
     }
 }
 
@@ -133,9 +140,25 @@ DECIMAL_SEPARATOR = '.'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
-STATIC_ROOT = 'staticfiles'
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICSFILES_DIRNAME = 'staticfiles'
+if not os.path.exists(os.path.join(BASE_DIR,  STATICSFILES_DIRNAME)):
+    os.makedirs(os.path.join(BASE_DIR,  STATICSFILES_DIRNAME))
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, STATICSFILES_DIRNAME),
+)
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
+
+MEDIA_DIRNAME = 'media'
+if not os.path.exists(os.path.join(BASE_DIR,  MEDIA_DIRNAME)):
+    os.makedirs(os.path.join(BASE_DIR,  MEDIA_DIRNAME))
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -211,3 +234,29 @@ CORS_ALLOWED_METHODS = [
     'DELETE',
     'OPTIONS',
 ]
+
+
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_SIGNATURE_NAME = os.environ.get('AWS_S3_SIGNATURE_NAME')
+AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME')
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL =  None
+AWS_S3_VERIFY = True
+# DEFAULT_FILE_STORAGE = config('AWS_DEFAULT')
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.s3.S3Storage",
+        "WEB": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "OPTIONS": {
+        },
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
+
+# STATICFILES_STORAGE = "storages.backends.s3.S3Storage"
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
