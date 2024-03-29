@@ -32,8 +32,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'False'
 
-ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', 'localhost')]
-CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS')
+ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', 'https://localhost')]
+CSRF_TRUSTED_ORIGINS = ['https://inkaback-production.up.railway.app']
 
 
 # Application definition
