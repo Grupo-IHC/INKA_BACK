@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-r91d9ymj!9c#g9241btg**518b#2n*ji&&%c%&ja#4jlrh1y#s
 DEBUG = 'False'
 
 ALLOWED_HOSTS = '*'
-CSRF_TRUSTED_ORIGINS = ['*']
+CSRF_TRUSTED_ORIGINS = ['https://inkaback-production.up.railway.app']
 
 
 # Application definition
