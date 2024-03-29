@@ -1,9 +1,17 @@
-FROM python:3.10
-WORKDIR /usr/src/app
-COPY requirements.txt ./
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt --root-user-action=ignore 
-COPY . .
-EXPOSE 8000
+FROM python:3.10-slim-bullseye
+WORKDIR /app
 
-ENTRYPOINT [ "gunicorn", "core.wsgi", "-b", "0.0.0.0:8000","runserver"]
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
+
+# install system dependencies
+RUN apt-get update
+
+# install dependencies
+RUN pip install --upgrade pip
+COPY ./requirements.txt /app/
+RUN pip install -r requirements.txt
+
+COPY . /app
+
+ENTRYPOINT [ "gunicorn", "core.wsgi", "-b", "0.0.0.0:8000"]
