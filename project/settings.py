@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-r91d9ymj!9c#g9241btg**518b#2n*ji&&%c%&ja#4jlrh1y#s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = 'False'
 
-ALLOWED_HOSTS = '*'
+ALLOWED_HOSTS = ['localhost','inkaback-production.up.railway.app']
 CSRF_TRUSTED_ORIGINS = ['https://inkaback-production.up.railway.app']
 
 
@@ -198,8 +198,6 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:8000',
     # '*'
 ]
-
-ALLOWED_HOSTS = ['.onrender.com']
 
 CORS_ALLOW_ALL_ORIGINS = True  # Establece esto en True si deseas permitir todos los dominios
 
