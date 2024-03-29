@@ -15,8 +15,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include, re_path
+from django.conf import settings
+from django.views.static import serve
+
+admin.site.site_header = 'INKA Backend'                   # default: "Django Administration"
+admin.site.index_title = 'Administración del sitio'                 # default: "Site administration"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('security/', include('security.urls')),
+    path('api/', include('api.urls'))
 ]
