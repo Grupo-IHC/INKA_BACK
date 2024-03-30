@@ -17,20 +17,6 @@ class Client(Updater):
 
     def __str__(self):
         return "{}: {}".format(self.last_name, self.document_number)
-    
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
-        if not self.user:
-
-            username = self.document_number 
-            password = f'{self.password}'
-            email = self.email if self.email else None
-
-            user = User.objects.create_user(username=username, password=password, email=email)
-
-            self.user = user
-            self.save() 
 
     def complete_name(self):
         return f"{(self.last_name.upper())} {(self.second_last_name).upper()}, {(self.first_name).upper()}{' ' + (self.second_name).upper() if self.second_name else ''}"

@@ -1,0 +1,12 @@
+{% autoescape off %}
+Hola,
+
+Te damos la bienvenida al proceso de registro. Para completar tu registro, por favor haz clic en el enlace de abajo:
+
+{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+Gracias por unirte a nuestra comunidad. Si tienes alguna pregunta o necesitas ayuda, no dudes en ponerte en contacto con nosotros.
+
+Atentamente,
+El equipo de INKA SAC
+{% endautoescape %}
