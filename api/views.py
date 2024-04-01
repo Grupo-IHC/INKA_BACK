@@ -52,7 +52,7 @@ def activate(request, uidb64, token):
         user.save()
 
         messages.success(request, "Thank you for your email confirmation. Now you can login your account.")
-        return redirect('https://www.google.com')
+        return redirect('https://inka-kappa.vercel.app')
     else:
         messages.error(request, "Activation link is invalid!")
 
@@ -103,7 +103,9 @@ def activate_user(request, user, to_email):
         'token': account_activation_token.make_token(user),
         "protocol": 'https' if request.is_secure() else 'http'
     })
+    
     email = EmailMessage(mail_subject, message, to=[to_email])
+    email.content_subtype = "html"  # Esto asegura que el correo electrónico se envíe como HTML
     if email.send():
         messages.success(request, f'Estimado/a <b>{user}</b>, por favor ve a tu correo electrónico <b>{to_email}</b> y haz clic en el enlace de activación recibido para confirmar y completar el registro. <b>Nota:</b> Revisa tu carpeta de spam.')
     else:

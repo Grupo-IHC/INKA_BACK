@@ -1,12 +1,56 @@
 {% autoescape off %}
-Hola,
-
-Te damos la bienvenida al proceso de registro. Para completar tu registro, por favor haz clic en el enlace de abajo:
-
-{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}
-
-Gracias por unirte a nuestra comunidad. Si tienes alguna pregunta o necesitas ayuda, no dudes en ponerte en contacto con nosotros.
-
-Atentamente,
-El equipo de INKA SAC
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verificación de cuenta - INKA SAC</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      font-size: 28px;
+      color: #F25D07;
+      margin-top: 0;
+    }
+    p {
+      margin: 10px 0;
+    }
+    .btn {
+      display: inline-block;
+      background-color: #401C08;
+      color: #fff;
+      padding: 12px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 18px;
+    }
+    .btn:hover {
+      background-color: #5e361f;
+    }
+    .footer {
+      margin-top: 30px;
+      color: #6b6666;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div style="max-width: 500px; margin: 0 auto; padding: 20px; background-image: #D1C8C1; border-radius: 25px;">
+    <h1>¡Bienvenido a INKA SAC!</h1>
+    <p>Gracias por registrarte en INKA SAC. Para completar tu registro, por favor haz clic en el siguiente enlace:</p><br>
+    <p>
+        <a href="{{ protocol }}://{{ domain }}{% url 'activate' uidb64=uid token=token %}" class="btn" style="color: #fff;">Verificar cuenta</a>
+    </p><br>
+    <p>Si tienes algún problema para verificar tu cuenta, no dudes en contactarnos enviando un mensaje a este mismo correo.</p>
+    <p class="footer">Atentamente,<br>El equipo de INKA SAC</p>
+  </div>
+</body>
+</html>
 {% endautoescape %}
