@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'storages',
+    'corsheaders',
     
     'security',
     'api',
@@ -59,6 +60,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -219,7 +221,7 @@ CORS_ALLOWED_ORIGINS = [
     # 'http://example.com',
     # 'https://example.com',
     'http://localhost:8000',
-    'http://localhost:5173',
+    # 'http://localhost:5173',
     # '*'
 ]
 
