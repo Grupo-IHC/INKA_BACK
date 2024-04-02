@@ -219,6 +219,7 @@ CORS_ALLOWED_ORIGINS = [
     # 'http://example.com',
     # 'https://example.com',
     'http://localhost:8000',
+    'http://localhost:5173',
     # '*'
 ]
 
