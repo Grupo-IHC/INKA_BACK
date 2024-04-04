@@ -30,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = 'False'
+DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', 'https://localhost')]
 CSRF_TRUSTED_ORIGINS = ['https://inkaback-production.up.railway.app']
