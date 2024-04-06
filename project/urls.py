@@ -25,5 +25,7 @@ admin.site.index_title = 'Administración del sitio'                 # default: 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('security/', include('security.urls')),
-    path('api/', include('api.urls'))
+    path('product/', include('product.urls')),
+    path('inventory/', include('inventory.urls')),
+    path('sales/', include('sales.urls')),
 ]

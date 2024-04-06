@@ -24,7 +24,6 @@ from django.utils.encoding import force_bytes, force_str
 from django.core.mail import EmailMessage
 from .tokens import account_activation_token
 from rest_framework.permissions import AllowAny
-from api.models import Client
 
 # Vista para autenticar usuarios y generar tokens
 class UserLoginView(APIView):
