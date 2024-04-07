@@ -1,17 +1,32 @@
-FROM python:3.11.4-slim-bullseye
-WORKDIR /app
+ARG PYTHON_VERSION=3.10-slim-buster
 
-ENV PYTHONUNBUFFERED 1
+ARG DEBIAN_FRONTEND=noninteractive
+
+FROM python:${PYTHON_VERSION}
+
 ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-# install system dependencies
-RUN apt-get update
+RUN mkdir -p /code
 
-# install dependencies
-RUN pip install --upgrade pip
-COPY ./requirements.txt /app/
-RUN pip install -r requirements.txt
+WORKDIR /code
 
-COPY . /app
+#install the linux packages, since these are the dependencies of some python packages
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    gcc \
+    cron \
+    wkhtmltopdf \
+    && rm -rf /var/lib/apt/lists/* !
 
-ENTRYPOINT [ "gunicorn", "core.wsgi", "-b", "0.0.0.0:8000"]
+COPY requirements.txt /tmp/requirements.txt
+
+RUN set -ex && \
+    pip install --upgrade pip && \
+    pip install -r /tmp/requirements.txt && \
+    rm -rf /root/.cache/
+
+COPY . /code
+#Add the following lines to make the release.sh script executable to run your script
+RUN chmod +x /code/release.sh
+CMD ["/code/release.sh"]
