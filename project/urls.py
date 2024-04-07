@@ -18,11 +18,14 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
 from django.views.static import serve
+from django.urls import path, reverse_lazy
+from django.views.generic import RedirectView
 
 admin.site.site_header = 'INKA Backend'                   # default: "Django Administration"
 admin.site.index_title = 'Administración del sitio'                 # default: "Site administration"
 
 urlpatterns = [
+    path('', RedirectView.as_view(url=reverse_lazy('admin:index')), name='home'), # Redirecciona al panel de administración
     path('admin/', admin.site.urls),
     path('security/', include('security.urls')),
     path('product/', include('product.urls')),
