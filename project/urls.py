@@ -26,7 +26,7 @@ admin.site.index_title = 'Administración del sitio'                 # default: 
 
 urlpatterns = [
      # Redirecciona al panel de administración
-    path('/', admin.site.urls),
+    path('', admin.site.urls),
     path('security/', include('security.urls')),
     path('product/', include('product.urls')),
     path('inventory/', include('inventory.urls')),
