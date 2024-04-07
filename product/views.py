@@ -30,7 +30,12 @@ class productGetPost(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request):
         try:
+            category = request.params.get('category')
+
             model_product = Product.objects.all().select_related('category_product','type_product','color_product')
+            
+            if category:
+                model_product = model_product.filter(category_product=category)
 
             if not model_product.exists():
                 return Response({'status': 'ERROR','msg': 'No hay productos registrados'}, status=status.HTTP_400_BAD_REQUEST)
