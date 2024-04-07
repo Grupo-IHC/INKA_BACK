@@ -29,4 +29,4 @@ RUN set -ex && \
 COPY . /code
 #Add the following lines to make the release.sh script executable to run your script
 RUN chmod +x /code/release.sh
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000","/code/release.sh"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000" ]
