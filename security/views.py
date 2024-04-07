@@ -218,7 +218,7 @@ class UserRegisterView(APIView):
 
             activate_user(request, user, email)
 
-            return Response({'status': 'OK', 'msg': 'Por favor, verifica tu correo electrónico y haz clic en el enlace de activación para completar tu registro. Nota: Revisa tu carpeta de spam.'}, status=status.HTTP_200_OK)
+            return Response({'status': 'OK', 'msg': 'Por favor, verifica tu correo electrónico y haz clic en el enlace de activación para completar tu registro. Revisa tu carpeta de spam.'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'status': 'ERROR', 'msg': 'Error al registrar el cliente.', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

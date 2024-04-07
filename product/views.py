@@ -129,3 +129,36 @@ class productGetById(APIView):
             return Response({'status': 'OK','data': data}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'status': 'ERROR','msg': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class typeGetPost(APIView):
+    permission_classes = (IsAuthenticated,)
+    def get(self, request):
+        try:
+            model_type_product = TypeProduct.objects.all()
+            if not model_type_product.exists():
+                return Response({'status': 'ERROR','msg': 'No hay tipos de producto registrados'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if model_type_product.exists():
+                data = []
+                for type_product in model_type_product:
+                    data.append({
+                        'id': type_product.id,
+                        'name': type_product.name,
+                        'description': type_product.description,
+                    })
+                return Response({'status': 'OK','data': data}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'status': 'ERROR','msg': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def post(self, request):
+        try:
+            name = request.data.get('name')
+            if not name:
+                return Response({'status': 'ERROR','msg': 'El campo nombre es obligatorio'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            model_type_product = TypeProduct.objects.create(
+                name = name
+            )
+            return Response({'status': 'OK','msg': 'Tipo de producto registrado correctamente'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'status': 'ERROR','msg': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
