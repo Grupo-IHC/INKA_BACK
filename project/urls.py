@@ -25,6 +25,7 @@ admin.site.site_header = 'INKA Backend'                   # default: "Django Adm
 admin.site.index_title = 'Administración del sitio'                 # default: "Site administration"
 
 urlpatterns = [
+    path('', RedirectView.as_view(url=reverse_lazy('admin:index'))),
     path('admin/', admin.site.urls),
     path('security/', include('security.urls')),
     path('product/', include('product.urls')),
