@@ -25,8 +25,7 @@ admin.site.site_header = 'INKA Backend'                   # default: "Django Adm
 admin.site.index_title = 'Administración del sitio'                 # default: "Site administration"
 
 urlpatterns = [
-     # Redirecciona al panel de administración
-    path('', admin.site.urls),
+    path('admin/', admin.site.urls),
     path('security/', include('security.urls')),
     path('product/', include('product.urls')),
     path('inventory/', include('inventory.urls')),
