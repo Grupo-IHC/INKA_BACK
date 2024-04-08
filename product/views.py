@@ -30,7 +30,7 @@ class productGetPost(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request):
         try:
-            category = request.params.get('category')
+            category = request.query_params.get('category')
 
             model_product = Product.objects.all().select_related('category_product','type_product','color_product')
             
