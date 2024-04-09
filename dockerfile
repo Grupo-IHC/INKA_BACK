@@ -1,32 +1,17 @@
-ARG PYTHON_VERSION=3.10-slim-buster
+FROM python:3.10.4-alpine3.15
 
-ARG DEBIAN_FRONTEND=noninteractive
+ENV PYTHONUNBUFFERED=1
 
-FROM python:${PYTHON_VERSION}
+WORKDIR /app
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+RUN  apk update \
+	&& apk add --no-cache gcc musl-dev postgresql-dev python3-dev libffi-dev \
+	&& pip install --upgrade pip
 
-RUN mkdir -p /code
+COPY ./requirements.txt ./
 
-WORKDIR /code
+RUN pip install -r requirements.txt
 
-#install the linux packages, since these are the dependencies of some python packages
-RUN apt-get update && apt-get install -y \
-    libpq-dev \
-    gcc \
-    cron \
-    wkhtmltopdf \
-    && rm -rf /var/lib/apt/lists/* !
+COPY ./ ./
 
-COPY requirements.txt /tmp/requirements.txt
-
-RUN set -ex && \
-    pip install --upgrade pip && \
-    pip install -r /tmp/requirements.txt && \
-    rm -rf /root/.cache/
-
-COPY . /code
-#Add the following lines to make the release.sh script executable to run your script
-RUN chmod +x /code/release.sh
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000" ]
+CMD ["sh", "entrypoint.sh"]
