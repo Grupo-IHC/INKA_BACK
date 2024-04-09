@@ -155,10 +155,31 @@ class typeGetById(APIView):
             if not model_type_product:
                 return Response({'status': 'ERROR','msg': 'El tipo de producto no existe'}, status=status.HTTP_400_BAD_REQUEST)
             
+            model_category_product = CategoryProduct.objects.all()
+
+            
+            for category in model_category_product:
+                if model_type_product.id == 'ff3c7b6c-83db-41c2-9d37-ceb325bc879d' or model_type_product.id == '1716490f-b25b-4ca3-ba9c-957c545e285a':
+                    data_category = {
+                        'name': 'TODOS'
+                    }
+                
+                if model_type_product.id == '11c4d953-d310-4eb0-9438-1bb15769f146':
+                    data_category = {
+                        'id': category.id,
+                        'name': category.name
+                    }
+                
+                if model_type_product.id == '9cede5ca-b93d-4989-a60c-2403c32504eb':
+                    data_category = {
+                        'id': category.id,
+                        'name': category.name
+                    }
             data = {
                 'id': model_type_product.id,
                 'name': model_type_product.name,
                 'description': model_type_product.description,
+                'category_product': data_category
             }
             return Response({'status': 'OK','data': data}, status=status.HTTP_200_OK)
         except Exception as e:
