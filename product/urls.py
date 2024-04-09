@@ -8,5 +8,5 @@ urlpatterns = [
 
     path('<str:product_id>', views.productGetById.as_view(), name='obtener_actualizar_eliminar_producto'),
     # path('category/<str:category_id>', views.categoryGetById.as_view(), name='obtener_actualizar_eliminar_categoria'),
-    # path('type/<str:type_id>', views.typeGetById.as_view(), name='obtener_actualizar_eliminar_tipo'),
+    path('type/<str:type_id>', views.typeGetById.as_view(), name='obtener_actualizar_eliminar_tipo'),
 ]

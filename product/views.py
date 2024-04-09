@@ -145,4 +145,22 @@ class typeGetPost(APIView):
             return Response({'status': 'ERROR','msg': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'status': 'ERROR','msg': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+class typeGetById(APIView):
+    permission_classes = (AllowAny,)
 
+    def get(self, request, type_id):
+        try:
+            model_type_product = TypeProduct.objects.filter(id=type_id).first()
+            if not model_type_product:
+                return Response({'status': 'ERROR','msg': 'El tipo de producto no existe'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            data = {
+                'id': model_type_product.id,
+                'name': model_type_product.name,
+                'description': model_type_product.description,
+            }
+            return Response({'status': 'OK','data': data}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'status': 'ERROR','msg': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
