@@ -25,7 +25,7 @@ class CategoryProductAdmin(admin.ModelAdmin):
 
 @admin.register(TypeProduct)
 class TypeProductAdmin(admin.ModelAdmin):
-    list_display    = ('id','name', 'description','category') + default_list_display
+    list_display    = ('id','name', 'description') + default_list_display
     # list_editable   = default_list_editable
     list_filter     = ('name', 'description') + default_list_filter
     search_fields   = ('name', 'description') + default_search_fields
