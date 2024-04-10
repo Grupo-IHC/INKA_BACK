@@ -47,7 +47,6 @@ class productGetPost(APIView):
                     'id': product.id,
                     'name': product.name,
                     'description': product.description,
-                    'category_product': product.category_product.name,
                     'type_product': product.type_product.name,
                     'color_product': product.color_product.name,
                     'price': product.price,
@@ -65,17 +64,15 @@ class productGetPost(APIView):
                 if not request.data.get(field):
                     return Response({'status': 'ERROR', 'msg': f'El campo {field} es obligatorio'}, status=status.HTTP_400_BAD_REQUEST)
 
-            model_category_product = CategoryProduct.objects.filter(id=request.data.get('category_product')).first()
             model_type_product = TypeProduct.objects.filter(id=request.data.get('type_product')).first()
             model_color_product = ColorProduct.objects.filter(id=request.data.get('color_product')).first()
 
-            if not all([model_category_product, model_type_product, model_color_product]):
+            if not all([model_type_product, model_color_product]):
                 return Response({'status': 'ERROR', 'msg': 'Uno o más elementos relacionados no existen'}, status=status.HTTP_400_BAD_REQUEST)
 
             model_product = Product.objects.create(
                 name=request.data.get('name'),
                 description=request.data.get('description'),
-                category_product=model_category_product,
                 type_product=model_type_product,
                 color_product=model_color_product,
                 price=request.data.get('price'),
@@ -99,7 +96,6 @@ class productGetById(APIView):
                 'id': model_product.id,
                 'name': model_product.name,
                 'description': model_product.description,
-                'category_product': model_product.category_product.name,
                 'type_product': model_product.type_product.name,
                 'color_product': model_product.color_product.name,
                 'price': model_product.price,
