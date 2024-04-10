@@ -33,7 +33,7 @@ class productGetPost(APIView):
     def get(self, request):
         try:
             type = request.query_params.get('type')
-            model_product = Product.objects.all().select_related('category_product', 'type_product', 'color_product')
+            model_product = Product.objects.all().select_related( 'type_product', 'color_product')
 
             if type:
                 model_product = model_product.filter(type_product=type)
@@ -59,7 +59,7 @@ class productGetPost(APIView):
 
     def post(self, request):
         try:
-            required_fields = ['name', 'description', 'category_product', 'type_product', 'color_product', 'price', 'measure', 'image']
+            required_fields = ['name', 'description',  'type_product', 'color_product', 'price', 'measure', 'image']
             for field in required_fields:
                 if not request.data.get(field):
                     return Response({'status': 'ERROR', 'msg': f'El campo {field} es obligatorio'}, status=status.HTTP_400_BAD_REQUEST)
@@ -88,7 +88,7 @@ class productGetById(APIView):
     permission_classes = (AllowAny,)
     def get(self, request, product_id):
         try:
-            model_product = Product.objects.filter(id=product_id).select_related('category_product','type_product','color_product').first()
+            model_product = Product.objects.filter(id=product_id).select_related('type_product','color_product').first()
             if not model_product:
                 return Response({'status': 'ERROR','msg': 'El producto no existe'}, status=status.HTTP_400_BAD_REQUEST)
             
