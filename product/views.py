@@ -32,11 +32,11 @@ class productGetPost(APIView):
 
     def get(self, request):
         try:
-            category = request.query_params.get('category')
+            type = request.query_params.get('type')
             model_product = Product.objects.all().select_related('category_product', 'type_product', 'color_product')
 
-            if category:
-                model_product = model_product.filter(category_product=category)
+            if type:
+                model_product = model_product.filter(type_product=type)
 
             if not model_product.exists():
                 return Response({'status': 'ERROR', 'msg': 'No hay productos registrados'}, status=status.HTTP_400_BAD_REQUEST)
