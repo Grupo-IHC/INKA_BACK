@@ -32,7 +32,7 @@ class TypeProductAdmin(admin.ModelAdmin):
     readonly_fields = default_readonly_fields
     fieldsets = (
         ('Información Básica', {
-            'fields': ('name', 'description','category'),
+            'fields': ('name', 'description'),
         }),
         default_fields
     )
@@ -53,15 +53,15 @@ class ColorProductAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display    = ('id','name', 'description',  'type_product', 'color_product', 'price', 'measure', 'image') + default_list_display
+    list_display    = ('id','name', 'description',  'type_product', 'category_product','color_product', 'price', 'measure', 'image') + default_list_display
     # list_editable   = default_list_editable
-    list_filter     = ('name', 'description',  'type_product', 'color_product', 'price', 'measure', 'image') + default_list_filter
-    search_fields   = ('name', 'description',  'type_product', 'color_product', 'price', 'measure', 'image') + default_search_fields
+    list_filter     = ('name', 'description',  'type_product', 'category_product', 'color_product', 'price', 'measure', 'image') + default_list_filter
+    search_fields   = ('name', 'description',  'type_product', 'category_product', 'color_product', 'price', 'measure', 'image') + default_search_fields
     readonly_fields = default_readonly_fields
-    list_select_related = ( 'type_product','color_product')
+    list_select_related = ( 'type_product','color_product', 'category_product')
     fieldsets = (
         ('Información Básica', {
-            'fields': ('name', 'description',  'type_product', 'color_product', 'price', 'measure', 'image'),
+            'fields': ('name', 'description',  'type_product', 'category_product', 'color_product', 'price', 'measure', 'image'),
         }),
         default_fields
     )
