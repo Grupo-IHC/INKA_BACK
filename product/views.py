@@ -49,7 +49,7 @@ class productGetPost(APIView):
                     'description': product.description,
                     'type_product': product.type_product.name,
                     'color_product': product.color_product.name,
-                    'category_product': product.category_product.name,
+                    'category_product': product.category_product.name if product.category_product else None,
                     'price': product.price,
                     'measure': product.measure,
                     'image': product.image.url,
