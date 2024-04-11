@@ -24,7 +24,7 @@ from django.core.files.storage import default_storage
 from django.db.models import Count
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
-
+from collections import defaultdict
 # Create your views here.
 
 class productGetPost(APIView):
@@ -33,28 +33,45 @@ class productGetPost(APIView):
     def get(self, request):
         try:
             type = request.query_params.get('type')
-            model_product = Product.objects.all().select_related( 'type_product', 'color_product', 'category_product')
+            category = request.query_params.get('category')
+            model_product = Product.objects.all().select_related('type_product', 'color_product', 'category_product')
 
             if type:
                 model_product = model_product.filter(type_product=type)
+
+            if category:
+                model_product = model_product.filter(category_product=category)
 
             if not model_product.exists():
                 return Response({'status': 'ERROR', 'msg': 'No hay productos registrados'}, status=status.HTTP_400_BAD_REQUEST)
 
             data = []
+
+            products_by_name = {}
+
             for product in model_product:
-                data.append({
-                    'id': product.id,
-                    'name': product.name,
-                    'description': product.description,
-                    'type_product': product.type_product.name,
-                    'color_product': product.color_product.name,
-                    'category_product': product.category_product.name if product.category_product else None,
-                    'price': product.price,
-                    'measure': product.measure,
-                    'image': product.image.url,
-                })
+
+                if product.name in products_by_name:
+
+                    products_by_name[product.name]['color'].add(str(product.color_product))
+                else:
+
+                    products_by_name[product.name] = {
+                        'id': product.id,
+                        'name': product.name,
+                        'description': product.description,
+                        'type_product': product.type_product.name,
+                        'color': {str(product.color_product)},
+                        'category_product': product.category_product.name if product.category_product else None,
+                        'price': product.price,
+                        'measure': product.measure,
+                        'image': product.image.url,
+                    }
+
+            data = list(products_by_name.values())
+
             return Response({'status': 'OK', 'data': data}, status=status.HTTP_200_OK)
+
         except Exception as e:
             return Response({'status': 'ERROR', 'msg': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
