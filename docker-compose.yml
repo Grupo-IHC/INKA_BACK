@@ -1,24 +1,39 @@
-version: '3.9'
+version: "1.7"
 
 services:
-
-  django:
+  inka_backend:
+    pull_policy: build
     build: .
+    container_name: inka_backend
     restart: always
     ports:
-      - "8000:8000"
+      - ${PORT}:8000
     volumes:
-      - .:/app
-    depends_on:
-      - postgres
-
-  postgres:
-    image: postgres:14.3-alpine3.16
-    ports:
-      - "5431:5432"
-    volumes:
-      - ./database:/var/lib/postgresql/data
+      - ./project:/app
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
+      - SECRET_KEY=${SECRET_KEY}
+      - DEBUG=${DEBUG}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS}
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - CSRF_TRUSTED_ORIGINS=${CSRF_TRUSTED_ORIGINS}
+      - AWS_KEY_ID=${AWS_KEY_ID}
+      - AWS_SECRET_KEY=${AWS_SECRET_KEY}
+      - AWS_BUCKET_NAME=${AWS_BUCKET_NAME}
+      - AWS_SIGNATURE_NAME=${AWS_SIGNATURE_NAME}
+      - AWS_REGION_NAME=${AWS_REGION_NAME}
+      - AWS_DEFAULT=${AWS_DEFAULT}
+    networks:
+      - npm
+      - inka
+networks:
+  inka:
+    name: inka
+    driver: bridge
+  npm:
+    name: npm
+    # external: true
+    driver: bridge
