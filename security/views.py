@@ -202,6 +202,9 @@ class UserRegisterView(APIView):
             if not email or not password or not document_number:
                 return Response({'status': 'ERROR', 'msg': 'Faltan datos requeridos.'}, status=status.HTTP_400_BAD_REQUEST)
 
+            if not email.endswith('@gmail.com'):
+                return Response({'status': 'ERROR', 'msg': 'Por favor, utiliza una dirección de correo electrónico de Gmail.'}, status=status.HTTP_400_BAD_REQUEST)
+            
             if User.objects.filter(email=email).exists():
                 return Response({'status': 'ERROR', 'msg': 'El correo electrónico ya está registrado.'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -252,7 +255,9 @@ class ContactView(APIView):
             if not name or not email or not mail_subject or not message:
                 return Response({'status': 'ERROR', 'msg': 'Faltan datos requeridos.'}, status=status.HTTP_400_BAD_REQUEST)
 
-            mail_subject = f"Nuevo mensaje de {name}"
+            if not email.endswith('@gmail.com'):
+                return Response({'status': 'ERROR', 'msg': 'Por favor, utiliza una dirección de correo electrónico de Gmail.'}, status=status.HTTP_400_BAD_REQUEST)
+            
             message = render_to_string("template_contact.html", {
                 'name': name,
                 'email': email,

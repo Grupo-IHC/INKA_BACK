@@ -1,8 +1,19 @@
 {% autoescape off %}
-{{name}}
 
-{{message}}
-
-{{email}}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensaje del cliente desde Pagina Web</title>
+</head>
+<body>
+    <p>
+        Mensaje de: {{ name }} (Correo electrónico: {{ email }})
+        <br><br>
+        {{ message }}
+    </p>
+</body>
+</html>
 
 {% endautoescape %}
