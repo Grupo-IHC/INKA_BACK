@@ -54,7 +54,7 @@ class productGetPost(APIView):
 
 
             product_data = []
-            type_data = {}
+            type_data = []
             products_by_name = {}
 
             for product in model_product:
@@ -76,7 +76,7 @@ class productGetPost(APIView):
                         'image': product.image.url,
                     }
 
-                    type_data[product.type_product.name] = {
+                    type_data = {
                         'name': product.type_product.name,
                         'description': product.type_product.description,
                     }

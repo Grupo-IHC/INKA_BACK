@@ -13,5 +13,7 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('activate/<uidb64>/<token>', views.activate, name='activate'),
     path('register', views.UserRegisterView.as_view(), name='client_register'),
+
+    path('contact', views.ContactView.as_view(), name='contact'),
     # path('envs', views.EnvsView.as_view(), name='envs'),
 ] 

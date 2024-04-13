@@ -238,3 +238,33 @@ def activate_user(request, user, to_email):
         messages.success(request, f'Estimado/a <b>{user}</b>, por favor ve a tu correo electrónico <b>{to_email}</b> y haz clic en el enlace de activación recibido para confirmar y completar el registro. <b>Nota:</b> Revisa tu carpeta de spam.')
     else:
         messages.error(request, f'Problema al enviar el correo electrónico a {to_email}, verifica si lo escribiste correctamente.')
+
+class ContactView(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        try:
+            name = request.data.get('name')
+            email = request.data.get('email')
+            mail_subject = request.data.get('mail_subject')
+            message = request.data.get('message')
+
+            if not name or not email or not mail_subject or not message:
+                return Response({'status': 'ERROR', 'msg': 'Faltan datos requeridos.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            mail_subject = f"Nuevo mensaje de {name}"
+            message = render_to_string("template_contact.html", {
+                'name': name,
+                'email': email,
+                'mail_subject': mail_subject,
+                'message': message
+            })
+            
+            email = EmailMessage(mail_subject, message, to=[settings.EMAIL_HOST_USER])
+            email.content_subtype = "html" 
+            if email.send():
+                return Response({'status': 'OK', 'msg': 'Mensaje enviado correctamente.'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'status': 'ERROR', 'msg': 'Problema al enviar el mensaje.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            return Response({'status': 'ERROR', 'msg': 'Error al enviar el mensaje.', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
