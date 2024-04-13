@@ -39,16 +39,16 @@ class productGetPost(APIView):
             product_data = []
             type_data = []
             products_by_name = {}
-            
+
             if type:
                 model_product = model_product.filter(type_product=type)
                 category_set = set() 
                 category_data = []
                 for product in model_product:
                     if product.category_product:
-                        category_set.add(product.category_product.name)
+                        category_set.add((product.category_product.id, product.category_product.name))
 
-                category_data = [{'name': category} for category in category_set]
+                category_data = [{'id': category[0], 'name': category[1]} for category in category_set]
 
             if category:
                 model_product = model_product.filter(category_product=category)
