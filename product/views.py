@@ -36,6 +36,10 @@ class productGetPost(APIView):
             category = request.query_params.get('category')
             model_product = Product.objects.all().select_related('type_product', 'color_product', 'category_product')
             
+            product_data = []
+            type_data = []
+            products_by_name = {}
+            
             if type:
                 model_product = model_product.filter(type_product=type)
                 category_set = set() 
@@ -50,12 +54,7 @@ class productGetPost(APIView):
                 model_product = model_product.filter(category_product=category)
 
             if not model_product.exists():
-                return Response({'status': 'ERROR', 'msg': 'No hay productos registrados'}, status=status.HTTP_400_BAD_REQUEST)
-
-
-            product_data = []
-            type_data = []
-            products_by_name = {}
+                return Response({'status': 'ERROR', 'msg': 'No hay productos registrados' , 'type': type_data,'product': product_data, 'category': category_data}, status=status.HTTP_400_BAD_REQUEST)
 
             for product in model_product:
 
@@ -136,7 +135,7 @@ class productGetByName(APIView):
                     products_by_name[product.name] = {
                         'id': {str(product.id)},
                         'name': product.name,
-                        'description': product.description,
+                        'description': product.description if product.description else None,
                         'type_product': product.type_product.name,
                         'color': {str(product.color_product)},
                         'category_product': product.category_product.name if product.category_product else None,

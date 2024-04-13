@@ -9,4 +9,5 @@ urlpatterns = [
     path('<str:product_name>', views.productGetByName.as_view(), name='obtener_actualizar_eliminar_producto'),
     # path('category/<str:category_id>', views.categoryGetById.as_view(), name='obtener_actualizar_eliminar_categoria'),
     # path('type/<str:type_id>', views.TypeGetById.as_view(), name='obtener_actualizar_eliminar_tipo'),
+
 ]
