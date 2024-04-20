@@ -46,6 +46,7 @@ class ColorProduct(Updater):
 
 class Product(Updater):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name="ID")
+    code = models.CharField(max_length=100, default=None, blank=True, null=True, verbose_name="Código")
     name = models.CharField(max_length=100, default=None, blank=True, null=True, verbose_name="Nombre")
     description = models.TextField(default=None, blank=True, null=True, verbose_name="Descripción")
     type_product = models.ForeignKey(TypeProduct, on_delete=models.CASCADE, related_name="products", verbose_name="Tipo de producto",default=None, blank=True, null=True)

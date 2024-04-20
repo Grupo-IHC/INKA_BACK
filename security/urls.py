@@ -16,4 +16,7 @@ urlpatterns = [
 
     path('contact', views.ContactView.as_view(), name='contact'),
     # path('envs', views.EnvsView.as_view(), name='envs'),
+
+    path('password_reset', views.ResetPasswordView.as_view(), name='password_reset'),
+    path('change_password', views.ChangePasswordView.as_view(), name='change_password'),
 ] 
