@@ -66,6 +66,7 @@ class productGetPost(APIView):
                     products_by_name[product.name] = {
                         # 'id': product.id,
                         'name': product.name,
+                        'code': product.code,
                         # 'description': product.description,
                         # 'type_product': product.type_product.name,
                         'color': {str(product.color_product)},
@@ -142,10 +143,12 @@ class productGetByName(APIView):
                         'price': product.price,
                         'measure': product.measure,
                         'image': product.image.url,
+                        'stock': {str(product.stock)}
                     }
                 else:
                     products_by_name[product.code]['id'].add(str(product.id))
                     products_by_name[product.code]['color'].add(str(product.color_product))
+                    products_by_name[product.code]['stock'].add(str(product.stock))
 
             data = list(products_by_name.values())
 
