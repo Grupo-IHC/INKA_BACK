@@ -98,7 +98,6 @@ class UserLoginView(APIView):
         except Exception as e:
             return Response({'detail': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
 # Vista para verificar tokens de acceso
 class VerifyView(APIView):
     permission_classes = (AllowAny,)
@@ -149,7 +148,6 @@ class VerifyView(APIView):
             })
         except TokenError as e:
             return Response({'detail': str(e)}, status=status.HTTP_401_UNAUTHORIZED)
-
 
 class EnvsView(APIView):
     permission_classes = (AllowAny,)
