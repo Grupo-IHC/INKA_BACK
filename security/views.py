@@ -184,8 +184,7 @@ def activate(request, uidb64, token):
         messages.success(request, "Thank you for your email confirmation. Now you can login your account.")
         return redirect('https://inka-kappa.vercel.app')
     else:
-        messages.error(request, "El enlace de activación ha caducado. Por favor, solicite un nuevo enlace.")
-        return HttpResponse("El enlace de activación ha caducado.")
+        return render(request, 'template_expired_code.html', {'status': 'ERROR', 'msg': 'Activation link is invalid!'})
         
 class UserRegisterView(APIView):
     permission_classes = (AllowAny,)
