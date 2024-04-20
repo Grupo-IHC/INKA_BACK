@@ -55,6 +55,7 @@ class Product(Updater):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=None, blank=True, null=True, verbose_name="Precio")
     measure = models.CharField(max_length=100, default=None, blank=True, null=True, verbose_name="Medida")
     image = models.FileField(upload_to="products/", default=None, blank=True, null=True, verbose_name="Imagen")
+    stock = models.IntegerField(default=0, blank=True, null=True, verbose_name="Stock")
 
     def __str__(self):
         return "{} - {}".format(self.name, self.price)

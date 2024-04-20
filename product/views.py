@@ -119,9 +119,9 @@ class productGetPost(APIView):
 class productGetByName(APIView):
     permission_classes = (AllowAny,)
     
-    def get(self, request, product_name):
+    def get(self, request, code):
         try:
-            model_products = Product.objects.filter(name=product_name).select_related('type_product', 'color_product', 'category_product')
+            model_products = Product.objects.filter(code=code).select_related('type_product', 'color_product', 'category_product')
 
             if not model_products.exists():
                 return Response({'status': 'ERROR', 'msg': 'No hay productos registrados'}, status=status.HTTP_400_BAD_REQUEST)
@@ -131,8 +131,8 @@ class productGetByName(APIView):
             products_by_name = {}
 
             for product in model_products:
-                if product.name not in products_by_name:
-                    products_by_name[product.name] = {
+                if product.code not in products_by_name:
+                    products_by_name[product.code] = {
                         'id': {str(product.id)},
                         'name': product.name,
                         'description': product.description if product.description else None,
@@ -144,8 +144,8 @@ class productGetByName(APIView):
                         'image': product.image.url,
                     }
                 else:
-                    products_by_name[product.name]['id'].add(str(product.id))
-                    products_by_name[product.name]['color'].add(str(product.color_product))
+                    products_by_name[product.code]['id'].add(str(product.id))
+                    products_by_name[product.code]['color'].add(str(product.color_product))
 
             data = list(products_by_name.values())
 
