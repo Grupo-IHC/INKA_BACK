@@ -143,12 +143,12 @@ class productGetByName(APIView):
                         'price': product.price,
                         'measure': product.measure,
                         'image': product.image.url,
-                        'stock': {str(product.stock)}
+                        'stock': [str(product.stock)]
                     }
                 else:
                     products_by_name[product.code]['id'].add(str(product.id))
                     products_by_name[product.code]['color'].add(str(product.color_product))
-                    products_by_name[product.code]['stock'].add(str(product.stock)).distinct()
+                    products_by_name[product.code]['stock'].append(str(product.stock))
 
             data = list(products_by_name.values())
 
