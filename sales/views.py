@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
-class SaleGetPost(APIView):
+class saleGetPost(APIView):
     parser_classes = [MultiPartParser, FormParser]
     permission_classes = (IsAuthenticated)
 

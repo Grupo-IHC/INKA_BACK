@@ -12,8 +12,8 @@ from security.admin import default_fields
 class OrderAdmin(admin.ModelAdmin):
     list_display    = ('id', 'product', 'desing', 'price', 'quantity') + default_list_display
     # list_editable   = default_list_editable
-    list_filter     = () + default_list_filter
-    search_fields   = ( 'product') + default_search_fields
+    list_filter     = default_list_filter
+    search_fields   = ('product',) + default_search_fields
     readonly_fields = default_readonly_fields
     list_select_related = ( 'product',)
     fieldsets = (
