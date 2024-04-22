@@ -10,15 +10,15 @@ from security.admin import default_fields
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display    = ('id','client', 'product', 'desing', 'price', 'quantity') + default_list_display
+    list_display    = ('id', 'product', 'desing', 'price', 'quantity') + default_list_display
     # list_editable   = default_list_editable
-    list_filter     = ('client',) + default_list_filter
-    search_fields   = ('client', 'product') + default_search_fields
+    list_filter     = () + default_list_filter
+    search_fields   = ( 'product') + default_search_fields
     readonly_fields = default_readonly_fields
-    list_select_related = ('client', 'product',)
+    list_select_related = ( 'product',)
     fieldsets = (
         ('Información Básica', {
-            'fields': ('client', 'product', 'desing', 'price', 'quantity'),
+            'fields': ( 'product', 'desing', 'price', 'quantity'),
         }),
         default_fields
     )

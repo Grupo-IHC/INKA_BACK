@@ -9,7 +9,7 @@ import uuid
 
 class Order(Updater):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name="ID")
-    client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="orders", verbose_name="Cliente", default=None, blank=True, null=True)
+    # client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="orders", verbose_name="Cliente", default=None, blank=True, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Producto", default=None, blank=True, null=True)
     desing = models.FileField(upload_to="orders/", default=None, blank=True, null=True, verbose_name="Diseño")
     price = models.DecimalField(max_digits=10, decimal_places=2, default=None, blank=True, null=True, verbose_name="Precio")
