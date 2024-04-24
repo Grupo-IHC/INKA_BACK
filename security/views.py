@@ -57,41 +57,17 @@ class UserLoginView(APIView):
         try:
             # Generar tokens de acceso y actualización
             refresh = RefreshToken.for_user(user)
-            # model_employee = None
-            # if not username == 'system':
-            #     model_employee = Employee.objects.select_related('user','job').get(document_number=username)
-            #     if user.groups.first().id == 1: # Admin
-            #         rol = 'ADM'
-            #     elif user.groups.first().id == 2: # User
-            #         rol = 'USU'
-            #     elif user.groups.first().id == 3: # Supervisor
-            #         rol = 'SUP'
-            #     elif user.groups.first().id == 4: # Recursos Humanos
-            #         rol = 'RHH'
-            
-
-            # if model_employee:
-            #     user_info = {
-            #         'id': model_employee.id if model_employee.id else "",
-            #         'job_id': model_employee.job.id if model_employee.job.id else '',
-            #         'job': model_employee.job.name if model_employee.job.name else '',
-            #         'name': model_employee.complete_name(),
-            #         'sede': model_employee.sede.name if model_employee.sede.name else '',
-            #         'company': model_employee.company.business_name if model_employee.company.business_name else '',
-            #         'username': user.username,
-            #         'rol': rol if rol else ''
-            #     }
-            # else:
-            #     user_info = {
-            #         'name': user.first_name,
-            #         'lastname': user.last_name,
-            #         'username': user.username,
-            #         'rol': 'ADM'
-            #     }   
+            model_client = Client.objects.get(user=user)
             # Respuesta con confirmación de autenticación y tokens
             return Response({
                 'confirmation': 'Autenticación exitosa',
                 'user': user.username,
+                'info_user': {
+                    'first_name': model_client.first_name.upper(),
+                    'last_name': model_client.last_name.upper(),
+                    'email': model_client.email,
+                    'document_number': model_client.document_number,
+                },
                 'refresh': str(refresh),
                 'access': str(refresh.access_token),
             })
@@ -110,40 +86,17 @@ class VerifyView(APIView):
             access_token_obj = AccessToken(request.data['token'])
             user_id = access_token_obj['user_id']
             user = User.objects.get(id=user_id)
+            model_client = Client.objects.get(user=user)
 
-            # model_employee = None
-            # if not user.username == 'system':
-            #     model_employee = Employee.objects.select_related('user','job').get(document_number=user.username)
-            #     if user.groups.first().id == 1: # Admin
-            #         rol = 'ADM'
-            #     elif user.groups.first().id == 2: # User
-            #         rol = 'USU'
-            #     elif user.groups.first().id == 3: # Supervisor
-            #         rol = 'SUP'
-            #     elif user.groups.first().id == 4: # Recursos Humanos
-            #         rol = 'RHH'
-
-            # if model_employee:
-            #     user_info = {
-            #         'id': model_employee.id if model_employee.id else "",
-            #         'job_id': model_employee.job.id if model_employee.job.id else '',
-            #         'job': model_employee.job.name if model_employee.job.name else '',
-            #         'name': model_employee.complete_name(),
-            #         'sede': model_employee.sede.name if model_employee.sede.name else '',
-            #         'company': model_employee.company.business_name if model_employee.company.business_name else '',
-            #         'username': user.username,
-            #         'rol': rol if rol else ''
-            #     }
-            # else:
-            #     user_info = {
-            #         'name': user.first_name,
-            #         'lastname': user.last_name,
-            #         'username': user.username,
-            #         'rol': 'ADM'
-            #     }   
             # # Respuesta con información del usuario y token de acceso
             return Response({
                 'user': user.username,
+                'info_user': {
+                    'first_name': model_client.first_name.upper(),
+                    'last_name': model_client.last_name.upper(),
+                    'email': model_client.email,
+                    'document_number': model_client.document_number,
+                },
                 'access': request.data['token'],
             })
         except TokenError as e:
@@ -215,7 +168,8 @@ class UserRegisterView(APIView):
                 second_name=second_name,
                 last_name=last_name,
                 second_last_name=second_last_name,
-                document_number=document_number
+                document_number=document_number,
+                email=email
             )
             new_client.save()
 
@@ -282,7 +236,8 @@ class ResetPasswordView(APIView):
     CODIGO_VALIDEZ_MINUTOS = 15
     
     def generar_codigo_verificacion(self):
-        return ''.join(random.choices(string.digits, k=6))
+        caracteres = string.ascii_uppercase + string.digits
+        return ''.join(random.choices(caracteres, k=4))
 
     def guardar_codigo_verificacion_en_sesion(self, request, codigo):
         fecha_generacion = datetime.datetime.now()
