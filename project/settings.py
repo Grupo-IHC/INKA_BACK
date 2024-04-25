@@ -34,7 +34,11 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS', 'https://localhost')]
-CSRF_TRUSTED_ORIGINS = ['https://inkaback-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = [
+    'https://inkaback-production.up.railway.app',
+    'http://localhost:5173',
+    'http://inka-kappa.vercel.app',
+]
 
 CORS_ORIGIN_WHITELIST = [
     'http://localhost:5173',
@@ -229,7 +233,8 @@ CORS_ALLOWED_ORIGINS = [
     # 'http://example.com',
     # 'https://example.com',
     'http://localhost:8000',
-    # 'http://localhost:5173',
+    'http://localhost:5173',
+    'http://inka-kappa.vercel.app',
     # '*'
 ]
 
