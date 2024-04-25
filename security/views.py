@@ -237,12 +237,15 @@ class ResetPasswordView(APIView):
     
     def generar_codigo_verificacion(self):
         caracteres = string.ascii_uppercase + string.digits
+        print(caracteres)
         return ''.join(random.choices(caracteres, k=4))
 
     def guardar_codigo_verificacion_en_sesion(self, request, codigo):
         fecha_generacion = datetime.datetime.now()
         request.session['codigo_verificacion_generado'] = fecha_generacion.isoformat()
         request.session['codigo_verificacion'] = codigo
+        print(f'Codigo de verificacion: {codigo}')
+        print(f'Fecha de generacion: {fecha_generacion}')
 
     def eliminar_codigo_verificacion_de_sesion(self, request):
         if 'codigo_verificacion' in request.session:
@@ -252,6 +255,10 @@ class ResetPasswordView(APIView):
 
         if 'codigo_verificacion' not in request.session or 'codigo_verificacion_generado' not in request.session:
             return False
+        
+        print(f'Codigo ingresado: {codigo}')
+        print(f'Codigo guardado: {request.session["codigo_verificacion"]}')
+        print(f'Fecha de generacion: {request.session["codigo_verificacion_generado"]}')
         
         fecha_generacion_str = request.session['codigo_verificacion_generado']
         fecha_generacion = datetime.datetime.fromisoformat(fecha_generacion_str)
@@ -272,7 +279,8 @@ class ResetPasswordView(APIView):
         try:
             email = request.data.get('email')
             codigo_ingresado = request.data.get('code')
-
+            print(f'Codigo ingresado: {codigo_ingresado}')
+            print(f'Email: {email}')
             if not email:
                 return Response({'status': 'ERROR', 'msg': 'Faltan datos requeridos.'}, status=status.HTTP_400_BAD_REQUEST)
 
