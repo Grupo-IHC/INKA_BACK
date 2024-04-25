@@ -245,6 +245,7 @@ class ResetPasswordView(APIView):
         request.session['codigo_verificacion_generado'] = fecha_generacion.isoformat()
         request.session['codigo_verificacion'] = codigo
         print("......... guardar codigo verificacion en sesion .........")
+        print(request.session['codigo_verificacion'] if 'codigo_verificacion' in request.session else None)
         print(f'Codigo de verificacion: {codigo}')
         print(f'Fecha de generacion: {fecha_generacion}')
         print("......... fin .........")
