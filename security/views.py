@@ -228,73 +228,134 @@ class ContactView(APIView):
         except Exception as e:
             return Response({'status': 'ERROR', 'msg': 'Error al enviar el mensaje.', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-import string
+# class ResetPasswordView(APIView):
+#     permission_classes = (AllowAny,)
 
+#     CODIGO_VALIDEZ_MINUTOS = 15
+    
+#     def generar_codigo_verificacion(self):
+#         caracteres = string.ascii_uppercase + string.digits
+#         print(caracteres)
+#         return ''.join(random.choices(caracteres, k=4))
+
+#     def guardar_codigo_verificacion_en_sesion(self, request, codigo):
+#         fecha_generacion = datetime.datetime.now()
+#         request.session['codigo_verificacion_generado'] = fecha_generacion.isoformat()
+#         request.session['codigo_verificacion'] = codigo
+#         print("......... guardar codigo verificacion en sesion .........")
+#         print(request.session['codigo_verificacion'] if 'codigo_verificacion' in request.session else None)
+#         print(f'Codigo de verificacion: {codigo}')
+#         print(f'Fecha de generacion: {fecha_generacion}')
+#         print("......... fin .........")
+
+#     def eliminar_codigo_verificacion_de_sesion(self, request):
+#         if 'codigo_verificacion' in request.session:
+#             del request.session['codigo_verificacion']
+
+#     def verificar_codigo_verificacion(self, request, codigo):
+#         print("......... verificar_code .........")
+#         print("..1fin")
+#         print(request.session["codigo_verificacion"] if 'codigo_verificacion' in request.session else None)
+#         print("..2fin")
+#         if 'codigo_verificacion' not in request.session or 'codigo_verificacion_generado' not in request.session:
+#             print(request.session["codigo_verificacion"] if 'codigo_verificacion' in request.session else None)
+#             print(request.session["codigo_verificacion_generado"] if 'codigo_verificacion_generado' in request.session else None)
+#             print("entre al erro de verificar no hay codigo en sesion")
+#             return False
+        
+#         print(f'Codigo ingresado: {codigo}')
+#         print(f'Codigo guardado en la sesion: {request.session["codigo_verificacion"]}')
+        
+#         fecha_generacion_str = request.session['codigo_verificacion_generado']
+#         fecha_generacion = datetime.datetime.fromisoformat(fecha_generacion_str)
+#         fecha_actual = datetime.datetime.now()
+#         tiempo_transcurrido = fecha_actual - fecha_generacion
+
+#         if tiempo_transcurrido.total_seconds() > (self.CODIGO_VALIDEZ_MINUTOS * 60):
+#             self.eliminar_codigo_verificacion_de_sesion(request)
+#             print("......... vencio el token por tiempo .........")
+#             return False
+
+#         codigo_guardado = request.session['codigo_verificacion']
+#         if codigo_guardado and codigo == codigo_guardado:
+#             print("......... validando .........")
+#             print(codigo_guardado)
+#             print(codigo) 
+#             print("......... valide que son iguales .........")
+#             return True
+#         else:
+#             print("......... no son iguales .........")
+#             return False
+    
+#     def post(self, request):
+#         try:
+#             email = request.data.get('email')
+#             codigo_ingresado = request.data.get('code')
+#             print(f'Codigo ingresado: {codigo_ingresado}')
+#             print(f'Email ingresado: {email}')
+#             if not email:
+#                 return Response({'status': 'ERROR', 'msg': 'Faltan datos requeridos.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#             if not email.endswith('@gmail.com'):
+#                 return Response({'status': 'ERROR', 'msg': 'Por favor, utiliza una dirección de correo electrónico de Gmail.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+#             if not User.objects.filter(email=email, is_active=True).exists():
+#                 return Response({'status': 'ERROR', 'msg': 'El correo electrónico no está registrado.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+#             user = User.objects.get(email=email)
+#             client = Client.objects.get(user=user)
+            
+#             if not codigo_ingresado:
+#                 codigo_verificacion = self.generar_codigo_verificacion()
+#                 self.guardar_codigo_verificacion_en_sesion(request, codigo_verificacion)
+                
+#                 mail_subject = "Restablecer contraseña."
+#                 message = render_to_string("template_reset_password.html", {
+#                     'user': client.first_name.upper() + ' ' + client.last_name.upper(),
+#                     'random_number': codigo_verificacion
+#                 })
+
+#                 email = EmailMessage(mail_subject, message, to=[email])
+#                 email.content_subtype = "html" 
+#                 if email.send():
+#                     return Response({'status': 'OK', 'msg': 'Por favor, verifica tu correo electrónico y haz clic en el enlace de restablecimiento de contraseña. Revisa tu carpeta de spam.'}, status=status.HTTP_200_OK)
+#                 else:
+#                     return Response({'status': 'ERROR', 'msg': 'Problema al enviar el correo electrónico.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+#             else:
+#                 if self.verificar_codigo_verificacion(request, codigo_ingresado):
+#                     return Response({'status': 'OK', 'msg': 'Código de verificación válido. Puedes cambiar tu contraseña.'}, status=status.HTTP_200_OK)
+#                 else:
+#                     return Response({'status': 'ERROR', 'msg': 'Código de verificación incorrecto.'}, status=status.HTTP_400_BAD_REQUEST)
+
+#         except Exception as e:
+#             return Response({'status': 'ERROR', 'msg': 'Error al procesar la solicitud.', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+from django.core.exceptions import ObjectDoesNotExist
+
+def confirm_link_change_password(request, uidb64, token):
+    User = get_user_model()
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except:
+        user = None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+
+        messages.success(request, "Thank you for your email confirmation. Now you can login your account.")
+        return redirect('inka-kappa.vercel.app/auth/new-password')
+    else:
+        return render(request, 'template_expired_code.html', {'status': 'ERROR', 'msg': 'Activation link is invalid!'})
+    
 class ResetPasswordView(APIView):
     permission_classes = (AllowAny,)
 
-    CODIGO_VALIDEZ_MINUTOS = 15
-    
-    def generar_codigo_verificacion(self):
-        caracteres = string.ascii_uppercase + string.digits
-        print(caracteres)
-        return ''.join(random.choices(caracteres, k=4))
-
-    def guardar_codigo_verificacion_en_sesion(self, request, codigo):
-        fecha_generacion = datetime.datetime.now()
-        request.session['codigo_verificacion_generado'] = fecha_generacion.isoformat()
-        request.session['codigo_verificacion'] = codigo
-        print("......... guardar codigo verificacion en sesion .........")
-        print(request.session['codigo_verificacion'] if 'codigo_verificacion' in request.session else None)
-        print(f'Codigo de verificacion: {codigo}')
-        print(f'Fecha de generacion: {fecha_generacion}')
-        print("......... fin .........")
-
-    def eliminar_codigo_verificacion_de_sesion(self, request):
-        if 'codigo_verificacion' in request.session:
-            del request.session['codigo_verificacion']
-
-    def verificar_codigo_verificacion(self, request, codigo):
-        print("......... verificar_code .........")
-        print("..1fin")
-        print(request.session["codigo_verificacion"] if 'codigo_verificacion' in request.session else None)
-        print("..2fin")
-        if 'codigo_verificacion' not in request.session or 'codigo_verificacion_generado' not in request.session:
-            print(request.session["codigo_verificacion"] if 'codigo_verificacion' in request.session else None)
-            print(request.session["codigo_verificacion_generado"] if 'codigo_verificacion_generado' in request.session else None)
-            print("entre al erro de verificar no hay codigo en sesion")
-            return False
-        
-        print(f'Codigo ingresado: {codigo}')
-        print(f'Codigo guardado en la sesion: {request.session["codigo_verificacion"]}')
-        
-        fecha_generacion_str = request.session['codigo_verificacion_generado']
-        fecha_generacion = datetime.datetime.fromisoformat(fecha_generacion_str)
-        fecha_actual = datetime.datetime.now()
-        tiempo_transcurrido = fecha_actual - fecha_generacion
-
-        if tiempo_transcurrido.total_seconds() > (self.CODIGO_VALIDEZ_MINUTOS * 60):
-            self.eliminar_codigo_verificacion_de_sesion(request)
-            print("......... vencio el token por tiempo .........")
-            return False
-
-        codigo_guardado = request.session['codigo_verificacion']
-        if codigo_guardado and codigo == codigo_guardado:
-            print("......... validando .........")
-            print(codigo_guardado)
-            print(codigo) 
-            print("......... valide que son iguales .........")
-            return True
-        else:
-            print("......... no son iguales .........")
-            return False
-    
-    def post(self, request):
+    def post(self,request):
         try:
             email = request.data.get('email')
-            codigo_ingresado = request.data.get('code')
-            print(f'Codigo ingresado: {codigo_ingresado}')
-            print(f'Email ingresado: {email}')
             if not email:
                 return Response({'status': 'ERROR', 'msg': 'Faltan datos requeridos.'}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -305,35 +366,28 @@ class ResetPasswordView(APIView):
                 return Response({'status': 'ERROR', 'msg': 'El correo electrónico no está registrado.'}, status=status.HTTP_400_BAD_REQUEST)
             
             user = User.objects.get(email=email)
-            client = Client.objects.get(user=user)
             
-            if not codigo_ingresado:
-                codigo_verificacion = self.generar_codigo_verificacion()
-                self.guardar_codigo_verificacion_en_sesion(request, codigo_verificacion)
-                
-                mail_subject = "Restablecer contraseña."
-                message = render_to_string("template_reset_password.html", {
-                    'user': client.first_name.upper() + ' ' + client.last_name.upper(),
-                    'random_number': codigo_verificacion
-                })
-
-                email = EmailMessage(mail_subject, message, to=[email])
-                email.content_subtype = "html" 
-                if email.send():
-                    return Response({'status': 'OK', 'msg': 'Por favor, verifica tu correo electrónico y haz clic en el enlace de restablecimiento de contraseña. Revisa tu carpeta de spam.'}, status=status.HTTP_200_OK)
-                else:
-                    return Response({'status': 'ERROR', 'msg': 'Problema al enviar el correo electrónico.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-            else:
-                if self.verificar_codigo_verificacion(request, codigo_ingresado):
-                    return Response({'status': 'OK', 'msg': 'Código de verificación válido. Puedes cambiar tu contraseña.'}, status=status.HTTP_200_OK)
-                else:
-                    return Response({'status': 'ERROR', 'msg': 'Código de verificación incorrecto.'}, status=status.HTTP_400_BAD_REQUEST)
+            activate_change_password(request, user, email)
 
         except Exception as e:
             return Response({'status': 'ERROR', 'msg': 'Error al procesar la solicitud.', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
-from django.core.exceptions import ObjectDoesNotExist
+def activate_change_password(request, user, to_email):
+    mail_subject = "Restablecer contraseña."
+    message = render_to_string("template_reset_password.html", {
+        'user': user.username,
+        'domain': get_current_site(request).domain,
+        'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+        'token': account_activation_token.make_token(user),
+        "protocol": 'https' if request.is_secure() else 'http'
+    })
+    
+    email = EmailMessage(mail_subject, message, to=[to_email])
+    email.content_subtype = "html"  # Esto asegura que el correo electrónico se envíe como HTML
+    if email.send():
+        messages.success(request, f'Estimado/a <b>{user}</b>, por favor ve a tu correo electrónico <b>{to_email}</b> y haz clic en el enlace de activación recibido para confirmar y completar el registro. <b>Nota:</b> Revisa tu carpeta de spam.')
+    else:
+        messages.error(request, f'Problema al enviar el link de cambio de contraseña a {to_email}, verifica si lo escribiste correctamente.')
 
 class ChangePasswordView(APIView):
     permission_classes = (AllowAny,)
@@ -352,14 +406,8 @@ class ChangePasswordView(APIView):
             except ObjectDoesNotExist:
                 return Response({'status': 'ERROR', 'msg': 'No se encontró un usuario con ese correo electrónico.'}, status=status.HTTP_400_BAD_REQUEST)
 
-            reset_view = ResetPasswordView()
-            if not reset_view.verificar_codigo_verificacion(request, codigo_verificacion):
-                return Response({'status': 'ERROR', 'msg': 'Código de verificación incorrecto o expirado.'}, status=status.HTTP_400_BAD_REQUEST)
-
             user.set_password(nueva_contrasena)
             user.save()
-
-            reset_view.eliminar_codigo_verificacion_de_sesion(request)
 
             return Response({'status': 'OK', 'msg': 'Contraseña cambiada exitosamente.'}, status=status.HTTP_200_OK)
 
