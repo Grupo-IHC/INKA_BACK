@@ -256,6 +256,9 @@ class ResetPasswordView(APIView):
 
     def verificar_codigo_verificacion(self, request, codigo):
         print("......... verificar_code .........")
+        print("..1fin")
+        print(request.session["codigo_verificacion"] if 'codigo_verificacion' in request.session else None)
+        print("..2fin")
         if 'codigo_verificacion' not in request.session or 'codigo_verificacion_generado' not in request.session:
             print(request.session["codigo_verificacion"] if 'codigo_verificacion' in request.session else None)
             print(request.session["codigo_verificacion_generado"] if 'codigo_verificacion_generado' in request.session else None)
