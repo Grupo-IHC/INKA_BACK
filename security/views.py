@@ -244,21 +244,23 @@ class ResetPasswordView(APIView):
         fecha_generacion = datetime.datetime.now()
         request.session['codigo_verificacion_generado'] = fecha_generacion.isoformat()
         request.session['codigo_verificacion'] = codigo
+        print("......... guardar codigo verificacion en sesion .........")
         print(f'Codigo de verificacion: {codigo}')
         print(f'Fecha de generacion: {fecha_generacion}')
+        print("......... fin .........")
 
     def eliminar_codigo_verificacion_de_sesion(self, request):
         if 'codigo_verificacion' in request.session:
             del request.session['codigo_verificacion']
 
     def verificar_codigo_verificacion(self, request, codigo):
-
+        print("......... verificar_code .........")
         if 'codigo_verificacion' not in request.session or 'codigo_verificacion_generado' not in request.session:
+            print("entre al erro de verificar no hay codigo en sesion")
             return False
         
         print(f'Codigo ingresado: {codigo}')
-        print(f'Codigo guardado: {request.session["codigo_verificacion"]}')
-        print(f'Fecha de generacion: {request.session["codigo_verificacion_generado"]}')
+        print(f'Codigo guardado en la sesion: {request.session["codigo_verificacion"]}')
         
         fecha_generacion_str = request.session['codigo_verificacion_generado']
         fecha_generacion = datetime.datetime.fromisoformat(fecha_generacion_str)
@@ -267,12 +269,18 @@ class ResetPasswordView(APIView):
 
         if tiempo_transcurrido.total_seconds() > (self.CODIGO_VALIDEZ_MINUTOS * 60):
             self.eliminar_codigo_verificacion_de_sesion(request)
+            print("......... vencio el token por tiempo .........")
             return False
 
         codigo_guardado = request.session['codigo_verificacion']
         if codigo_guardado and codigo == codigo_guardado:
+            print("......... validando .........")
+            print(codigo_guardado)
+            print(codigo) 
+            print("......... valide que son iguales .........")
             return True
         else:
+            print("......... no son iguales .........")
             return False
     
     def post(self, request):
@@ -280,7 +288,7 @@ class ResetPasswordView(APIView):
             email = request.data.get('email')
             codigo_ingresado = request.data.get('code')
             print(f'Codigo ingresado: {codigo_ingresado}')
-            print(f'Email: {email}')
+            print(f'Email ingresado: {email}')
             if not email:
                 return Response({'status': 'ERROR', 'msg': 'Faltan datos requeridos.'}, status=status.HTTP_400_BAD_REQUEST)
 
