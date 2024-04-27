@@ -229,6 +229,13 @@ class ContactView(APIView):
             return Response({'status': 'ERROR', 'msg': 'Error al enviar el mensaje.', 'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 import string
+from django.http import JsonResponse
+
+class sesion(APIView):
+    permission_classes = (AllowAny,)
+    def get(self, request):
+        session_data = dict(request.session)
+        return JsonResponse(session_data)
 
 class ResetPasswordTEST(APIView):
     permission_classes = (AllowAny,)
