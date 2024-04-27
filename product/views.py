@@ -193,33 +193,58 @@ class typeGetPost(APIView):
             return Response({'status': 'ERROR','msg': str(e)}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'status': 'ERROR','msg': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
-# class TypeGetById(APIView):
-#     permission_classes = (AllowAny,)
+        
+class productFilterName(APIView):
+    permission_classes = (AllowAny,)
 
-#     def get(self, request, type_id):
-#         try:
-#             model_type_product = TypeProduct.objects.filter(id=type_id).first()
-#             if not model_type_product:
-#                 return Response({'status': 'ERROR', 'msg': 'El tipo de producto no existe'}, status=status.HTTP_400_BAD_REQUEST)
+    def get(self, request):
+        try:
+            name = request.query_params.get('name')
+            if not name:
+                return Response({'status': 'ERROR', 'msg': 'El campo de busqueda está vacío. Por favor, agregue un código o palabra que identifique el producto que busca.'}, status=status.HTTP_400_BAD_REQUEST)
             
-#             model_category_products = CategoryProduct.objects.filter(types=model_type_product.id)
+            if len(name) < 2:
+                return Response({'status': 'ERROR', 'msg': 'Para relizar la busqueda la palabra debe contener minimo 2 caracteres.'}, status=status.HTTP_400_BAD_REQUEST)
+            keywords = name.split()
 
-#             data_categories = []
-#             for category in model_category_products:
-#                 data_categories.append({
-#                     'id': category.id,
-#                     'name': category.name,
-#                     'description': category.description
-#                 })
+            query = Q()
+            for keyword in keywords:
+                query |= Q(name__icontains=keyword)
             
-#             data = {
-#                 'id': model_type_product.id,
-#                 'name': model_type_product.name,
-#                 'description': model_type_product.description,
-#                 'category': data_categories
-#             }
-#             return Response({'status': 'OK', 'data': data}, status=status.HTTP_200_OK)
-#         except Exception as e:
-#             return Response({'status': 'ERROR', 'msg': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            model_products = Product.objects.filter(query).select_related('type_product', 'color_product', 'category_product')
+
+            if not model_products.exists():
+                return Response({'status': 'ERROR', 'msg': 'No hay productos registrados'}, status=status.HTTP_400_BAD_REQUEST)
+
+            data = []
+
+            products_by_name = {}
+
+            for product in model_products:
+                if product.name not in products_by_name:
+                    products_by_name[product.name] = {
+                        # 'id': {str(product.id)},
+                        'name': product.name,
+                        # 'description': product.description if product.description else None,
+                        'type_product': product.type_product.name,
+                        'color': {str(product.color_product)},
+                        'category_product': product.category_product.name if product.category_product else None,
+                        'price': product.price,
+                        'measure': product.measure,
+                        'image': product.image.url,
+                        # 'stock': [str(product.stock)]
+                    }
+                else:
+                    # products_by_name[product.name]['id'].add(str(product.id))
+                    products_by_name[product.name]['color'].add(str(product.color_product))
+                    # products_by_name[product.name]['stock'].append(str(product.stock))
+
+            data = list(products_by_name.values())
+
+            return Response({'status': 'OK', 'data': data}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({'status': 'ERROR', 'msg': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
         

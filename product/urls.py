@@ -2,12 +2,11 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path('filter', views.productFilterName.as_view(), name='filtrar_productos_por_nombre'),
+    
     path('', views.productGetPost.as_view(), name='crear_listar_productos'), 
     path('type', views.typeGetPost.as_view(), name='crear_listar_tipos'),
-    # path('category', views.categoryGetPost.as_view(), name='crear_listar_categorias'),
 
     path('<str:code>', views.productGetByName.as_view(), name='obtener_actualizar_eliminar_producto'),
-    # path('category/<str:category_id>', views.categoryGetById.as_view(), name='obtener_actualizar_eliminar_categoria'),
-    # path('type/<str:type_id>', views.TypeGetById.as_view(), name='obtener_actualizar_eliminar_tipo'),
-
+    
 ]
