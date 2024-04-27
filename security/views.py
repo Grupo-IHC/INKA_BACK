@@ -312,7 +312,7 @@ class ResetPasswordTEST(APIView):
                 self.guardar_codigo_verificacion_en_sesion(request, codigo_verificacion)
                 
                 mail_subject = "Restablecer contraseña."
-                message = render_to_string("template_reset_password.html", {
+                message = render_to_string("test.html", {
                     'user': client.first_name.upper() + ' ' + client.last_name.upper(),
                     'random_number': codigo_verificacion
                 })
