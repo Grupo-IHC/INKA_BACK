@@ -1,0 +1,61 @@
+{% autoescape off %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restablecer ContraseÃ±a</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333333;
+            text-align: center;
+        }
+        p {
+            color: #666666;
+        }
+        .verification-code {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 30px;
+            padding: 10px;
+            background-color: #e8dfdb;
+            border-radius: 5px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #999999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Restablecer ContraseÃ±a</h1>
+        <p>Hola {{ user }},</p>
+        <p>Recibiste este correo electrÃ³nico porque solicitaste restablecer tu contraseÃ±a en nuestro sitio web.</p>
+        <div class="verification-code">
+            Tu cÃ³digo de verificaciÃ³n es: <strong>{{ random_number }}</strong>
+        </div>
+        <p>Utiliza este cÃ³digo para restablecer tu contraseÃ±a en la aplicaciÃ³n o sitio web.</p>
+        <p>Si no solicitaste este cambio, simplemente ignora este correo electrÃ³nico y tu contraseÃ±a permanecerÃ¡ sin cambios.</p>
+        <p class="footer">Gracias,<br>El equipo de INKA</p>
+    </div>
+</body>
+</html>
+{% endautoescape %}
