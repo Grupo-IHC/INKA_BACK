@@ -51,7 +51,7 @@ class TypeDeliveryAdmin(admin.ModelAdmin):
         default_fields
     )
 
-@admin.register(OrderDetail)
+@admin.register(Pedido)
 class OrderDetailAdmin(admin.ModelAdmin):
     list_display    = ('id', 'client', 'price', 'address', 'contact', 'contact_dni', 'quantity', 'date','type_delivery', 'method_payment') + default_list_display
     # list_editable   = default_list_editable

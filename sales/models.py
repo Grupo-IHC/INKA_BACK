@@ -11,12 +11,12 @@ class Order(Updater):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name="ID")
     # client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="orders", verbose_name="Cliente", default=None, blank=True, null=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="Producto", default=None, blank=True, null=True)
-    desing = models.FileField(upload_to="orders/", default=None, blank=True, null=True, verbose_name="Diseño")
+    desing = models.CharField(default=None, blank=True, null=True, verbose_name="Diseño")
     price = models.DecimalField(max_digits=10, decimal_places=2, default=None, blank=True, null=True, verbose_name="Precio")
     quantity = models.IntegerField(default=None, blank=True, null=True, verbose_name="Cantidad")
 
     def __str__(self):
-        return "{} - {}".format(self.client, self.product)
+        return "{} - {}".format(self.product)
     
     class Meta:
         db_table            = "order"
@@ -49,7 +49,7 @@ class TypeDelivery(Updater):
         verbose_name        = "Tipo de entrega"
         verbose_name_plural = "Tipos de entrega"
 
-class OrderDetail(Updater):
+class Pedido(Updater):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, verbose_name="ID")
     order = models.ManyToManyField(Order, related_name="details", verbose_name="Orden", default=None, blank=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name="orders_clients", verbose_name="Cliente", default=None, blank=True, null=True)

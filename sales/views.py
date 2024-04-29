@@ -47,36 +47,34 @@ class SaleGetPost(APIView):
                         quantity=order_quantity
                     )
 
-                    if design_image:
-                        order.design_image = design_image
-                        order.save()
-
                     id_orders.append(order.id)
 
             if insufficient_stock_products:
                 message = f"No hay suficiente stock para los siguientes productos: {', '.join(insufficient_stock_products)}"
                 return Response({"message": message}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+            user = request.user.username
+            instance_client = Client.objects.get(document_number=user)
+            instance_type_delivery = TypeDelivery.objects.get(id=type_delivery)
+            instance_method_payment = MethodPayment.objects.get(id=method_payment)
+
+            order_detail_obj = Pedido.objects.create(
+                order=id_orders,
+                client=instance_client,
+                price=price,
+                address=address,
+                contact=contact,
+                contact_dni=contact_dni,
+                quantity=quantity,
+                type_delivery=instance_type_delivery,
+                method_payment=instance_method_payment
+            )
+
+            return Response({"message": "Venta creada correctamente"}, status=status.HTTP_201_CREATED)
+    
         except Exception as e:
-            return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-        user = request.user.username
-        instance_client = Client.objects.get(document_number=user)
-        instance_type_delivery = TypeDelivery.objects.get(id=type_delivery)
-        instance_method_payment = MethodPayment.objects.get(id=method_payment)
-
-        order_detail_obj = OrderDetail.objects.create(
-            order=id_orders,
-            client=instance_client,
-            price=price,
-            address=address,
-            contact=contact,
-            contact_dni=contact_dni,
-            quantity=quantity,
-            type_delivery=instance_type_delivery,
-            method_payment=instance_method_payment
-        )
-
-        return Response({"message": "Venta creada correctamente"}, status=status.HTTP_201_CREATED)
+                return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 class shoppingGet(APIView):
     permission_classes = (IsAuthenticated)
