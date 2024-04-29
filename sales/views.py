@@ -5,6 +5,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import IsAuthenticated
+import boto3
+from botocore.exceptions import ClientError
+from rest_framework.permissions import AllowAny
 
 # Create your views here.
 
@@ -99,6 +102,63 @@ class shoppingGet(APIView):
             }
             data.append(order_data)
         return Response(data, status=status.HTTP_200_OK)
+    
+
+class DesignGetPost(APIView):
+    permission_classes = (AllowAny,)
+    def post(self, request):
+        try:
+            # Verificar si se proporcionaron imágenes
+            if 'desing' not in request.FILES:
+                return Response({'error': 'No se proporcionaron imágenes.'}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Obtener la lista de imágenes del request
+            design_files = request.FILES.getlist('desing')
+
+            # Configurar el cliente de AWS S3
+            s3 = boto3.client('s3')
+
+            uploaded_image_urls = []
+
+            # Iterar sobre cada imagen y subirla a AWS S3
+            for design_file in design_files:
+                # Generar una clave única para la imagen en el bucket de S3
+                s3_key = f"desing/{design_file.name}"
+
+                # Subir la imagen al bucket de S3
+                s3.upload_fileobj(design_file, 'aws-sellos', s3_key)
+
+                # Obtener la URL pública de la imagen cargada
+                image_url = f"https://aws-sellos.s3.amazonaws.com/{s3_key}"
+                
+                # Agregar la URL de la imagen a la lista de URLs cargadas
+                uploaded_image_urls.append({'nombre_archivo': design_file.name, 'url': image_url})
+
+            return Response({'status': 'OK', 'imagenes_subidas': uploaded_image_urls}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({'error': f'Error al cargar las imágenes: {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def delete(self, request):
+        try:
+            # Obtener la clave del archivo a eliminar del request
+            name = request.data.get('name')
+            
+            s3_key = f"desing/{name}"
+
+            # Configurar el cliente de AWS S3
+            s3 = boto3.client('s3')
+
+            # Eliminar el archivo del bucket de S3
+            s3.delete_object(Bucket='aws-sellos', Key=s3_key)
+
+            return Response({'status': 'OK', 'msg': 'Imagen eliminada exitosamente.'}, status=status.HTTP_200_OK)
+        except ClientError as e:
+            if e.response['Error']['Code'] == 'NoSuchKey':
+                return Response({'error': 'La imagen no existe en el bucket de AWS S3.'}, status=status.HTTP_404_NOT_FOUND)
+            else:
+                return Response({'error': f'Error al eliminar la imagen: {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            return Response({'error': f'Error al eliminar la imagen: {e}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
