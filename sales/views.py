@@ -9,13 +9,13 @@ from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 
 class SaleGetPost(APIView):
-    parser_classes = [MultiPartParser, FormParser]
+    # parser_classes = [MultiPartParser, FormParser]
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
         try:
             order_details = request.data.getlist('order_detail')
-            price = request.data.get('price')
+            price = request.data.get('price_total')
             address = request.data.get('address')
             contact = request.data.get('contact')
             contact_dni = request.data.get('contact_dni')
@@ -30,6 +30,7 @@ class SaleGetPost(APIView):
                 product_id = detail.get('product')
                 product_instance = Product.objects.get(id=product_id)
                 design_image = detail.get('design_image')
+                price = detail.get('price')
                 order_quantity = detail.get('quantity')
 
                 # Verificar si hay suficiente stock
@@ -42,8 +43,8 @@ class SaleGetPost(APIView):
 
                     order = Order.objects.create(
                         product=product_instance,
-                        design=detail['design'],
-                        price=detail['price'],
+                        design=design_image,
+                        price=price,
                         quantity=order_quantity
                     )
 
