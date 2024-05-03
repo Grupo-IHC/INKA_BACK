@@ -17,7 +17,7 @@ class SaleGetPost(APIView):
 
     def post(self, request):
         try:
-            order_details = request.data.getlist('order_detail')
+            order_details = request.data.get('order_detail')
             price = request.data.get('price_total')
             address = request.data.get('address')
             contact = request.data.get('contact')
