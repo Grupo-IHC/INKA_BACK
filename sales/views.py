@@ -46,7 +46,7 @@ class SaleGetPost(APIView):
 
                     order = Order.objects.create(
                         product=product_instance,
-                        design=design_image,
+                        desing=design_image,
                         price=price,
                         quantity=order_quantity
                     )
