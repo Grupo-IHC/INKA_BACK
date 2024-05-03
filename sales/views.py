@@ -126,7 +126,7 @@ class DesignGetPost(APIView):
                 s3_key = f"desing/{design_file.name}"
 
                 # Subir la imagen al bucket de S3
-                s3.upload_fileobj(design_file, 'aws-sellos', s3_key)
+                s3.upload_fileobj(design_file, 'aws-sellos', s3_key, ExtraArgs={'ContentType': "image/png"})
 
                 # Obtener la URL pública de la imagen cargada
                 image_url = f"https://aws-sellos.s3.amazonaws.com/{s3_key}"
