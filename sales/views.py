@@ -64,7 +64,6 @@ class SaleGetPost(APIView):
             instance_method_payment = MethodPayment.objects.get(id=method_payment)
 
             order_detail_obj = Pedido.objects.create(
-                order=id_orders,
                 client=instance_client,
                 price=price,
                 address=address,
@@ -74,6 +73,7 @@ class SaleGetPost(APIView):
                 type_delivery=instance_type_delivery,
                 method_payment=instance_method_payment
             )
+            order_detail_obj.order.set(id_orders)
 
             return Response({"message": "Venta creada correctamente"}, status=status.HTTP_201_CREATED)
     
