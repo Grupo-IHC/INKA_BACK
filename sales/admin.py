@@ -55,10 +55,10 @@ class TypeDeliveryAdmin(admin.ModelAdmin):
 class OrderDetailAdmin(admin.ModelAdmin):
     list_display    = ('id', 'client', 'price', 'address', 'contact', 'contact_dni', 'quantity', 'date','type_delivery', 'method_payment') + default_list_display
     # list_editable   = default_list_editable
-    list_filter     = ('order', 'client', 'price', 'address', 'contact', 'contact_dni', 'quantity', 'date') + default_list_filter
-    search_fields   = ('order', 'client', 'price', 'address', 'contact', 'contact_dni', 'quantity', 'date') + default_search_fields
+    list_filter     = ('client', 'price', 'address', 'contact', 'contact_dni', 'quantity', 'date') + default_list_filter
+    search_fields   = ('client', 'price', 'address', 'contact', 'contact_dni', 'quantity', 'date') + default_search_fields
     readonly_fields = default_readonly_fields
-    list_select_related = ('client', 'order','type_delivery', 'method_payment')
+    list_select_related = ('client', 'type_delivery', 'method_payment')
     fieldsets = (
         ('Información Básica', {
             'fields': ('order', 'client', 'price', 'address', 'contact', 'contact_dni', 'quantity', 'date','type_delivery', 'method_payment'),

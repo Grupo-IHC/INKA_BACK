@@ -16,7 +16,7 @@ class Order(Updater):
     quantity = models.IntegerField(default=None, blank=True, null=True, verbose_name="Cantidad")
 
     def __str__(self):
-        return "{} - {}".format(self.product)
+        return "{}".format(self.product)
     
     class Meta:
         db_table            = "order"
@@ -63,7 +63,7 @@ class Pedido(Updater):
     method_payment = models.ForeignKey(MethodPayment, on_delete=models.CASCADE, related_name="orders_details", verbose_name="Metodo de pago", default=None, blank=True, null=True)
 
     def __str__(self):
-        return "{} - {}".format(self.order, self.date)
+        return "{} - {}".format(self.id, self.date)
     
     class Meta:
         db_table            = "order_detail"
