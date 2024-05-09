@@ -18,7 +18,7 @@ class SaleGetPost(APIView):
     def post(self, request):
         try:
             order_details = request.data.get('order_detail')
-            price = request.data.get('price_total')
+            price_total = request.data.get('price_total')
             address = request.data.get('address')
             contact = request.data.get('contact')
             contact_dni = request.data.get('contact_dni')
@@ -65,7 +65,7 @@ class SaleGetPost(APIView):
 
             order_detail_obj = Pedido.objects.create(
                 client=instance_client,
-                price=price,
+                price=price_total,
                 address=address,
                 contact=contact,
                 contact_dni=contact_dni,
