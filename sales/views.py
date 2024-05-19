@@ -81,28 +81,36 @@ class SaleGetPost(APIView):
                 return Response({"message": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 class shoppingGet(APIView):
-    permission_classes = (IsAuthenticated)
+    permission_classes = (IsAuthenticated,)
 
     def get(self, request):
         user = request.user.username
         instance_client = Client.objects.get(document_number=user)
-        order = Order.objects.filter(client=instance_client)
+        model_pedido = Pedido.objects.filter(client=instance_client)
         data = []
-        for order_detail in order:
+        for order_detail in model_pedido:
+            order_items = []
+            for item in order_detail.order.all():
+                order_items.append({
+                    "product_id": item.product.id,
+                    "product_name": item.product.name,
+                    "quantity": item.quantity,
+                    "design": item.desing if item.desing else "No se proporcionó diseño",
+                    "price": item.price
+                })
             order_data = {
                 "id": order_detail.id,
-                "order": order_detail.order,
-                "price": order.price,
-                "address": order.address,
-                "contact": order.contact,
-                "contact_dni": order.contact_dni,
-                "quantity": order.quantity,
-                "type_delivery": order.type_delivery.name,
-                "method_payment": order.method_payment.name
+                "price": order_detail.price,
+                "address": order_detail.address if order_detail.address else "El producto se entregará en tienda",
+                "contact": order_detail.contact,
+                "contact_dni": order_detail.contact_dni,
+                "quantity": order_detail.quantity,
+                "type_delivery": order_detail.type_delivery.name,
+                "method_payment": order_detail.method_payment.name,
+                "order": order_items
             }
             data.append(order_data)
         return Response(data, status=status.HTTP_200_OK)
-    
 
 class DesignGetPost(APIView):
     permission_classes = (AllowAny,)

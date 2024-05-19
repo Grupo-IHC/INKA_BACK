@@ -64,15 +64,9 @@ class productGetPost(APIView):
                 else:
 
                     products_by_name[product.name] = {
-                        # 'id': product.id,
                         'name': product.name,
                         'code': product.code,
-                        # 'description': product.description,
-                        # 'type_product': product.type_product.name,
                         'color': {str(product.color_product)},
-                        # 'category_product': product.category_product.name if product.category_product else None,
-                        # 'price': product.price,
-                        # 'measure': product.measure,
                         'image': product.image.url,
                     }
 
@@ -117,7 +111,7 @@ class productGetPost(APIView):
         except Exception as e:
             return Response({'status': 'ERROR', 'msg': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-class productGetByName(APIView):
+class productGetByCode(APIView):
     permission_classes = (AllowAny,)
     
     def get(self, request, code):
@@ -156,7 +150,6 @@ class productGetByName(APIView):
 
         except Exception as e:
             return Response({'status': 'ERROR', 'msg': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
         
 class typeGetPost(APIView):
     permission_classes = (AllowAny,)
@@ -223,21 +216,16 @@ class productFilterName(APIView):
             for product in model_products:
                 if product.name not in products_by_name:
                     products_by_name[product.name] = {
-                        # 'id': {str(product.id)},
                         'name': product.name,
-                        # 'description': product.description if product.description else None,
                         'type_product': product.type_product.name,
                         'color': {str(product.color_product)},
                         'category_product': product.category_product.name if product.category_product else None,
                         'price': product.price,
                         'measure': product.measure,
                         'image': product.image.url,
-                        # 'stock': [str(product.stock)]
                     }
                 else:
-                    # products_by_name[product.name]['id'].add(str(product.id))
                     products_by_name[product.name]['color'].add(str(product.color_product))
-                    # products_by_name[product.name]['stock'].append(str(product.stock))
 
             data = list(products_by_name.values())
 
