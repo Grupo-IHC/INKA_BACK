@@ -406,10 +406,9 @@ class ChangePasswordView(APIView):
     def post(self, request):
         try:
             email = request.data.get('email')
-            codigo_verificacion = request.data.get('code')
             nueva_contrasena = request.data.get('new_password')
 
-            if not email or not codigo_verificacion or not nueva_contrasena:
+            if not email or not nueva_contrasena:
                 return Response({'status': 'ERROR', 'msg': 'Faltan datos requeridos.'}, status=status.HTTP_400_BAD_REQUEST)
 
             try:
