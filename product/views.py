@@ -214,18 +214,23 @@ class productFilterName(APIView):
             products_by_name = {}
 
             for product in model_products:
-                if product.name not in products_by_name:
-                    products_by_name[product.name] = {
+                if product.code not in products_by_name:
+                    products_by_name[product.code] = {
+                        'id': {str(product.id)},
                         'name': product.name,
+                        'description': product.description if product.description else None,
                         'type_product': product.type_product.name,
                         'color': {str(product.color_product)},
                         'category_product': product.category_product.name if product.category_product else None,
                         'price': product.price,
                         'measure': product.measure,
                         'image': product.image.url,
+                        'stock': [str(product.stock)]
                     }
                 else:
-                    products_by_name[product.name]['color'].add(str(product.color_product))
+                    products_by_name[product.code]['id'].add(str(product.id))
+                    products_by_name[product.code]['color'].add(str(product.color_product))
+                    products_by_name[product.code]['stock'].append(str(product.stock))
 
             data = list(products_by_name.values())
 
