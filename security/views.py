@@ -135,7 +135,7 @@ def activate(request, uidb64, token):
         user.save()
 
         messages.success(request, "Thank you for your email confirmation. Now you can login your account.")
-        return redirect('https://inka-kappa.vercel.app')
+        return redirect('https://inka-kappa.vercel.app/auth/new-password')
     else:
         return render(request, 'template_expired_code.html', {'status': 'ERROR', 'msg': 'Activation link is invalid!'})
         
