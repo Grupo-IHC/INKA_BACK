@@ -223,6 +223,7 @@ class productFilterName(APIView):
                     products_by_name[product.name] = {
                         'name': product.name,
                         'code': product.code,
+                        'price': product.price,
                         'color': {str(product.color_product)},
                         'image': product.image.url,
                     }
